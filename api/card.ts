@@ -1,4 +1,4 @@
-import { VercelRequest, VercelResponse } from "@vercel/node";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { fetchGitHubStats } from "../lib/github";
 import { generateSVG } from "../lib/svg";
 
