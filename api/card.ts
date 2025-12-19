@@ -1,26 +1,31 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { fetchGitHubStats } from "../lib/github";
 import { generateSVG } from "../lib/svg";
-
-export const config = {
-  runtime: "edge",
-};
+import { GitHubStats } from "../types/github";
 
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  const username = req.query.username as string || "octocat";
-  const token = process.env.GITHUB_TOKEN!;
+  const username = (req.query.username as string) || "octocat";
 
-  try {
-    const stats = await fetchGitHubStats(username, token);
-    const svg = generateSVG(stats);
+  // sementara dummy (nanti ganti API real)
+  const stats: GitHubStats = {
+    username,
+    commitsYear: 812,
+    totalCommits: 3241,
+    pullRequests: 87,
+    issues: 42,
+    publicRepos: 19,
+    totalStars: 136,
+    languages: [
+      { name: "TypeScript", percent: 42 },
+      { name: "Python", percent: 31 },
+      { name: "C++", percent: 17 }
+    ]
+  };
 
-    res.setHeader("Content-Type", "image/svg+xml");
-    res.setHeader("Cache-Control", "public, max-age=0, s-maxage=86400");
-    res.status(200).send(svg);
-  } catch (error) {
-    res.status(500).send("Failed to generate card");
-  }
+  const svg = generateSVG(stats);
+
+  res.setHeader("Content-Type", "image/svg+xml");
+  res.status(200).send(svg);
 }

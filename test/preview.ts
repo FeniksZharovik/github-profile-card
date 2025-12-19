@@ -1,12 +1,21 @@
 import * as fs from "fs";
 import * as path from "path";
 import { generateSVG } from "../lib/svg";
+import { GitHubStats } from "../types/github";
 
-const dummyData = {
+const dummyData: GitHubStats = {
   username: "Dragonflies",
-  repositories: 24,
-  commits: 1342,
-  followers: 128,
+  commitsYear: 812,
+  totalCommits: 3241,
+  pullRequests: 87,
+  issues: 42,
+  publicRepos: 19,
+  totalStars: 136,
+  languages: [
+    { name: "TypeScript", percent: 42 },
+    { name: "Python", percent: 31 },
+    { name: "C++", percent: 17 }
+  ]
 };
 
 const svg = generateSVG(dummyData);

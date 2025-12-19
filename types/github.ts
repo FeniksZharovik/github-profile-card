@@ -1,6 +1,15 @@
 export interface GitHubStats {
   username: string;
-  repositories: number;
-  commits: number;
-  followers: number;
+
+  commitsYear: number;
+  totalCommits: number;
+  pullRequests: number;
+  issues: number;
+  publicRepos: number;
+  totalStars: number;
+
+  languages: {
+    name: string;
+    percent: number;
+  }[];
 }

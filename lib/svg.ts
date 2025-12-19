@@ -1,40 +1,86 @@
 import { GitHubStats } from "../types/github";
 
-export function generateSVG(stats: GitHubStats): string {
+export function generateSVG(data: GitHubStats): string {
   return `
-<svg width="420" height="180" viewBox="0 0 420 180"
-     xmlns="http://www.w3.org/2000/svg">
+<svg width="480" height="320" viewBox="0 0 480 320"
+ xmlns="http://www.w3.org/2000/svg">
 
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0f2027"/>
-      <stop offset="50%" stop-color="#203a43"/>
-      <stop offset="100%" stop-color="#2c5364"/>
-    </linearGradient>
-  </defs>
+<style>
+  :root {
+    --card-bg: #f6f8fa;
+    --text: #24292f;
+    --muted: #57606a;
+    --accent: #0969da;
+  }
 
-  <rect width="420" height="180" rx="16" fill="url(#bg)" />
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --card-bg: #161b22;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+    }
+  }
 
-  <text x="24" y="36" fill="#ffffff" font-size="18"
-        font-family="Segoe UI, Arial, sans-serif">
-    ${stats.username}
-  </text>
+  text {
+    font-family: Inter, Segoe UI, Arial, sans-serif;
+    fill: var(--text);
+  }
+</style>
 
-  <text x="24" y="70" fill="#c9d1d9" font-size="14">
-    Repositories: ${stats.repositories}
-  </text>
+<rect width="480" height="320" rx="18" fill="var(--card-bg)" />
 
-  <text x="24" y="95" fill="#c9d1d9" font-size="14">
-    Commits: ${stats.commits}
-  </text>
+<!-- Header -->
+<text x="24" y="36" font-size="18" font-weight="600">
+  ${data.username}
+</text>
 
-  <text x="24" y="120" fill="#c9d1d9" font-size="14">
-    Followers: ${stats.followers}
-  </text>
+<text x="380" y="36" font-size="14" fill="var(--muted)">
+  ⭐ ${data.totalStars}
+</text>
 
-  <text x="24" y="155" fill="#8b949e" font-size="11">
-    Updated automatically every 24h
-  </text>
+<!-- Stats -->
+<g transform="translate(24,60)">
+  <text y="0" font-size="13">Commits (12mo): ${data.commitsYear}</text>
+  <text y="22" font-size="13">Total Commits: ${data.totalCommits}</text>
+  <text y="44" font-size="13">PRs: ${data.pullRequests}</text>
+  <text y="66" font-size="13">Issues: ${data.issues}</text>
+  <text y="88" font-size="13">Public Repos: ${data.publicRepos}</text>
+</g>
+
+<!-- Language Ranking -->
+<g transform="translate(24,170)">
+  <text font-size="15" font-weight="600">Top Languages</text>
+
+  ${data.languages.map((lang, i) => `
+    <g transform="translate(0, ${24 + i * 26})">
+      <text x="0" y="12" font-size="13">
+        ${i + 1}. ${lang.name}
+      </text>
+
+      <rect x="120" y="2" width="280" height="10" rx="5"
+        fill="#eaeef2" />
+
+      <rect x="120" y="2"
+        width="${lang.percent * 2.8}"
+        height="10"
+        rx="5"
+        fill="var(--accent)">
+        <animate attributeName="width"
+          from="0"
+          to="${lang.percent * 2.8}"
+          dur="0.8s"
+          begin="${0.2 + i * 0.2}s"
+          fill="freeze"/>
+      </rect>
+
+      <text x="410" y="12" font-size="12" fill="var(--muted)">
+        ${lang.percent}%
+      </text>
+    </g>
+  `).join("")}
+</g>
+
 </svg>
 `;
 }
